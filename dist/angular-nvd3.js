@@ -1,5 +1,5 @@
 /**************************************************************************
-* AngularJS-nvD3, v1.0.0-rc.2; MIT License; 10/07/2015 10:55
+* AngularJS-nvD3, v1.0.0-rc.2; MIT License; 03/08/2015 00:22
 * http://krispo.github.io/angular-nvd3
 **************************************************************************/
 (function(){
@@ -157,16 +157,22 @@
                                 // TODO this triggers one more refresh. Refactor it!
                                 scope.options.chart.transitionDuration = +scope.options.chart.transitionDuration || 250;
                                 // remove whole svg element with old data
-                                d3.select(element[0]).select('svg').remove();
+                                this.getD3Element().select('svg').remove();
 
                                 // Select the current element to add <svg> element and to render the chart in
-                                d3.select(element[0]).append('svg')
+                                this.getD3Element().append('svg')
                                     .attr('height', scope.options.chart.height)
                                     .attr('width', scope.options.chart.width  || '100%')
                                     .datum(data)
                                     .transition().duration(scope.options.chart.transitionDuration)
                                     .call(scope.chart);
                             }
+                        },
+
+                        getD3Element: function() {
+                            if (this.d3Element) return this.d3Element;
+                            this.d3Element = d3.select(element[0]);
+                            return this.d3Element;
                         },
 
                         // Fully clear directive element
@@ -188,6 +194,7 @@
                                 nv.tooltip.cleanup();
                             }
                             scope.chart = null;
+                            this.d3Element = null;
                         },
 
                         // Get full directive scope
