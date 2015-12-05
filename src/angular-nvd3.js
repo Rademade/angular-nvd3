@@ -39,7 +39,20 @@
                         update: function() {
                             scope.chart.update();
                         },
+                        // Update tooltip with new options
+                        updateTooltip: function(options){
+                          var _updateTooltip = function(tooltip, options){
+                            angular.forEach(options, function(val, key){
+                              tooltip[key](val);
+                            });
+                          };
 
+                          var _updateChartTooltipSettings = function(chart, options){
+                            _updateTooltip(chart.tooltip, options);
+                            _updateTooltip(chart.interactiveLayer.tooltip, options);
+                          };
+                          _updateChartTooltipSettings(scope.chart, options);
+                        },
                         // Update chart with new options
                         updateWithOptions: function(options){
                             // Clearing
@@ -56,7 +69,7 @@
 
                             // Generate random chart ID
                             scope.chart.id = Math.random().toString(36).substr(2, 15);
-
+                            scope.api.updateTooltip(options.chart.tooltip);
                             angular.forEach(scope.chart, function(value, key){
                                 if (key[0] === '_');
                                 else if ([
