@@ -1,5 +1,5 @@
 /**************************************************************************
-* AngularJS-nvD3, v1.0.0-rc.2; MIT License; 03/08/2015 00:22
+* AngularJS-nvD3, v1.0.0-rc.2; MIT License; 05/12/2015 23:46
 * http://krispo.github.io/angular-nvd3
 **************************************************************************/
 (function(){
@@ -43,7 +43,20 @@
                         update: function() {
                             scope.chart.update();
                         },
+                        // Update tooltip with new options
+                        updateTooltip: function(options){
+                          var _updateTooltip = function(tooltip, options){
+                            angular.forEach(options, function(val, key){
+                              tooltip[key](val);
+                            });
+                          };
 
+                          var _updateChartTooltipSettings = function(chart, options){
+                            _updateTooltip(chart.tooltip, options);
+                            _updateTooltip(chart.interactiveLayer.tooltip, options);
+                          };
+                          _updateChartTooltipSettings(scope.chart, options);
+                        },
                         // Update chart with new options
                         updateWithOptions: function(options){
                             // Clearing
@@ -60,7 +73,7 @@
 
                             // Generate random chart ID
                             scope.chart.id = Math.random().toString(36).substr(2, 15);
-
+                            scope.api.updateTooltip(options.chart.tooltip);
                             angular.forEach(scope.chart, function(value, key){
                                 if (key[0] === '_');
                                 else if ([
